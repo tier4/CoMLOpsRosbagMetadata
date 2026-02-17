@@ -4,6 +4,7 @@ All text must be written in English.
 
 ## General rules
 
+- **Dependencies**: Use **package.xml + rosdep** for ROS and system dependencies. Use **Poetry** (pyproject.toml) only for Python-only packages; do not add ROS packages to Poetry.
 - Never include any AI/agent signature (e.g., `Co-Authored-By: Claude ...`) in source code, commit messages, PR descriptions, or any other project artifacts.
 - Before reading large-token files (images, videos, PDFs, etc.), always ask the user for confirmation first.
 - When unused packages or source files (not referenced anywhere in the codebase) are found, proactively suggest their removal — but never delete them without user approval.

@@ -3,16 +3,26 @@
 """Integration test for CoMLOpsMetadataPublisherNode: launch the node and check /metadata content."""
 
 import os
+import sys
 import time
 import unittest
 
-from ament_index_python.packages import get_package_share_directory
 import launch
-from launch_ros.actions import Node
 import launch_testing.actions
 import pytest
 import rclpy
+from ament_index_python.packages import get_package_prefix, get_package_share_directory
+from launch_ros.actions import Node
 from std_msgs.msg import String
+
+
+def _node_additional_env():
+    """PYTHONPATH so the node process can import the package (e.g. when run via poetry run pytest)."""
+    prefix = get_package_prefix("co_mlops_rosbag_metadata")
+    py_ver = f"{sys.version_info.major}.{sys.version_info.minor}"
+    site_packages = os.path.join(prefix, "lib", f"python{py_ver}", "site-packages")
+    existing = os.environ.get("PYTHONPATH", "")
+    return {"PYTHONPATH": os.pathsep.join([site_packages, existing]) if existing else site_packages}
 
 
 @pytest.mark.rostest
@@ -25,13 +35,16 @@ def generate_test_description():
         package="co_mlops_rosbag_metadata",
         executable="co_mlops_metadata_publisher_node",
         parameters=[{"path": fixture_path}],
+        additional_env=_node_additional_env(),
     )
 
     return (
-        launch.LaunchDescription([
-            node,
-            launch_testing.actions.ReadyToTest(),
-        ]),
+        launch.LaunchDescription(
+            [
+                node,
+                launch_testing.actions.ReadyToTest(),
+            ]
+        ),
         {"fixture_path": fixture_path},
     )
 
@@ -60,7 +73,7 @@ class TestMetadataPublisherNode(unittest.TestCase):
         proc_output,
     ):
         """Expect one message on /metadata with content equal to the fixture file."""
-        with open(fixture_path, "r", encoding="utf-8") as f:
+        with open(fixture_path, encoding="utf-8") as f:
             expected = f.read()
 
         msgs = []
