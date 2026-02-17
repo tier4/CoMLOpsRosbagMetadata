@@ -1,0 +1,12 @@
+<launch>
+  <arg name="path" default="" description="Path to the YAML config file to publish." />
+  <arg name="topic" default="/metadata" description="Topic name to publish the config." />
+  <arg name="delay_before_first_publish" default="0.0" description="Delay in seconds before the first publish; 0 or less = best effort (publish as soon as possible)." />
+  <arg name="frequency" default="1.0" description="Republish rate in Hz; use 0 for one-shot." />
+  <node pkg="co_mlops_rosbag_metadata" exec="co_mlops_metadata_publisher_node" name="co_mlops_metadata_publisher_node">
+    <param name="path" value="$(var path)" />
+    <param name="topic" value="$(var topic)" />
+    <param name="delay_before_first_publish" value="$(var delay_before_first_publish)" />
+    <param name="frequency" value="$(var frequency)" />
+  </node>
+</launch>
