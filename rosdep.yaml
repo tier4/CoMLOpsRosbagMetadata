@@ -5,3 +5,8 @@
 python3-yaml:
   ubuntu:
     jammy: [python3-yaml]
+
+# PyPI-only; install with: rosdep install --from-paths . --ignore-src -y
+python3-pydantic:
+  pip:
+    packages: [pydantic==2.12.5]
