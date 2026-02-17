@@ -24,4 +24,13 @@ install(DIRECTORY
   launch
   DESTINATION share/${PROJECT_NAME})
 
+install(DIRECTORY test/fixtures
+  DESTINATION share/${PROJECT_NAME}/test)
+
+if(BUILD_TESTING)
+  find_package(launch_testing_ament_cmake REQUIRED)
+  add_launch_test(test/test_metadata_publisher_node.py)
+  add_launch_test(test/test_metadata_publisher_node_invalid_yaml.py)
+endif()
+
 ament_package()

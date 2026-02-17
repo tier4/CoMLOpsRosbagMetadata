@@ -1,0 +1,3 @@
+# Intentionally invalid YAML for testing error handling (no space after colon in flow)
+vehicle_id:[1, 2
+version: "1.0"

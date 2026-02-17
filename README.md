@@ -33,6 +33,22 @@ colcon build --packages-select co_mlops_rosbag_metadata
 source install/setup.bash
 ```
 
+To build with tests enabled (required before running tests), add `--cmake-args -DBUILD_TESTING=ON`:
+
+```bash
+colcon build --packages-select co_mlops_rosbag_metadata --cmake-args -DBUILD_TESTING=ON
+source install/setup.bash
+```
+
+### Testing
+
+```bash
+colcon test --packages-select co_mlops_rosbag_metadata
+colcon test-result --verbose
+```
+
+The last command prints the test output; omit it if you only need the pass/fail result.
+
 ### Usage
 
 #### Required parameter

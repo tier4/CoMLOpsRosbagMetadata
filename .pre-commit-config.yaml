@@ -10,6 +10,7 @@ repos:
       - id: check-merge-conflict
       - id: check-xml
       - id: check-yaml
+        exclude: .*test/fixtures/invalid_metadata\.yaml$
       - id: detect-private-key
       - id: end-of-file-fixer
       - id: mixed-line-ending
@@ -26,11 +27,13 @@ repos:
     rev: v3.0.0-alpha.9-for-vscode
     hooks:
       - id: prettier
+        exclude: .*test/fixtures/invalid_metadata\.yaml$
 
   - repo: https://github.com/adrienverge/yamllint
     rev: v1.32.0
     hooks:
       - id: yamllint
+        exclude: .*test/fixtures/invalid_metadata\.yaml$
 
   - repo: https://github.com/shellcheck-py/shellcheck-py
     rev: v0.9.0.5

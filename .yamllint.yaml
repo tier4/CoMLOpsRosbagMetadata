@@ -2,6 +2,8 @@ extends: default
 
 ignore: |
   *.param.yaml
+  # Intentionally invalid YAML for testing node error handling
+  src/co_mlops_rosbag_metadata/test/fixtures/invalid_metadata.yaml
 
 rules:
   braces:

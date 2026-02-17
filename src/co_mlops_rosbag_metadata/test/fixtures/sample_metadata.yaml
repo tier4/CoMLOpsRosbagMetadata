@@ -1,0 +1,3 @@
+# Sample metadata for node integration test
+vehicle_id: test_vehicle
+version: "1.0"
