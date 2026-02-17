@@ -28,9 +28,10 @@ install(DIRECTORY test/fixtures
   DESTINATION share/${PROJECT_NAME}/test)
 
 if(BUILD_TESTING)
+  find_package(ament_cmake_pytest REQUIRED)
   find_package(launch_testing_ament_cmake REQUIRED)
   add_launch_test(test/test_metadata_publisher_node.py)
-  add_launch_test(test/test_metadata_publisher_node_invalid_yaml.py)
+  ament_add_pytest_test(test_invalid_yaml_exit_code test/test_invalid_yaml_exit_code.py)
 endif()
 
 ament_package()
