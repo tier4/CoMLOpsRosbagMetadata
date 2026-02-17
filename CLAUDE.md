@@ -17,6 +17,9 @@ All text must be written in English.
 ### C/C++
 
 - Always separate declarations into header files (`.h`/`.hpp`) and implementations into source files (`.c`/`.cpp`), except for the `main` entry point file.
+- Always add a docstring (documentation comment) when defining functions, classes, or constants. In C/C++, use Doxygen-style comments (e.g. `/** ... */`) or equivalent.
+- When changing source code, always update the corresponding docstring so that the documentation stays accurate.
+- When changing source code, always update any corresponding documents (e.g. README, user docs, API docs) so that they reflect the change.
 
 ### Docker
 

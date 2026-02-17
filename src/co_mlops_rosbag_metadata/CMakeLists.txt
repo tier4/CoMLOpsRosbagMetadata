@@ -12,6 +12,7 @@ find_package(yaml_cpp_vendor REQUIRED)
 find_package(yaml-cpp REQUIRED)
 
 add_executable(co_mlops_metadata_publisher_node src/co_mlops_rosbag_metadata_publisher_node.cpp)
+target_include_directories(co_mlops_metadata_publisher_node PRIVATE include)
 ament_target_dependencies(co_mlops_metadata_publisher_node rclcpp std_msgs)
 target_link_libraries(co_mlops_metadata_publisher_node yaml-cpp)
 
