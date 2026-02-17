@@ -8,13 +8,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-22.04
+    container:
+      image: ros:humble-ros-base-jammy
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up ROS 2 Humble
-        uses: ros-tooling/setup-ros@v0.7
-        with:
-          required-ros-distributions: humble
 
       - name: Install dependencies
         run: |
@@ -29,6 +26,8 @@ jobs:
             --cmake-args -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON
 
       - name: Run tests
+        env:
+          ROS_LOCALHOST_ONLY: 1
         run: |
           source /opt/ros/humble/setup.bash
           source install/setup.bash
