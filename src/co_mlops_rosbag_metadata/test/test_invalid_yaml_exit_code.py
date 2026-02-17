@@ -5,9 +5,7 @@
 import os
 import subprocess
 
-from ament_index_python.packages import get_package_share_directory
-from ament_index_python.packages import get_package_prefix
-import pytest
+from ament_index_python.packages import get_package_prefix, get_package_share_directory
 
 
 def test_node_exits_with_error_code_on_invalid_yaml():
@@ -33,6 +31,5 @@ def test_node_exits_with_error_code_on_invalid_yaml():
     )
 
     assert result.returncode == 1, (
-        f"Expected exit code 1, got {result.returncode}. "
-        f"stderr: {result.stderr.decode()!r}"
+        f"Expected exit code 1, got {result.returncode}. " f"stderr: {result.stderr.decode()!r}"
     )

@@ -1,0 +1,7 @@
+# Local rosdep rules so CI and developers can resolve dependencies
+# without relying on the key being present in the global rosdistro index.
+# See: https://docs.ros.org/en/rolling/How-To-Guides/Rosdep.html
+
+python3-yaml:
+  ubuntu:
+    jammy: [python3-yaml]

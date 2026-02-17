@@ -35,35 +35,19 @@ repos:
       - id: yamllint
         exclude: .*test/fixtures/invalid_metadata\.yaml$
 
-  - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.9.0.5
+  - repo: local
     hooks:
-      - id: shellcheck
-
-  - repo: https://github.com/scop/pre-commit-shfmt
-    rev: v3.7.0-1
-    hooks:
-      - id: shfmt
-        args: [-w, -s, -i=4]
-
-  - repo: https://github.com/AleksaC/hadolint-py
-    rev: v2.12.0.2
-    hooks:
-      - id: hadolint
-
-  - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v18.1.5
-    hooks:
-      - id: clang-format
-        types_or: [c++, c, cuda]
-        exclude: ^(build/|install/|log/|.*\.(mcap|db3|pcd|bag|bin|so|a|o|dylib|dll|exe)|.*/json\.hpp$)
-
-  - repo: https://github.com/cpplint/cpplint
-    rev: 1.6.1
-    hooks:
-      - id: cpplint
-        args: [--quiet]
-        types_or: [c++, c, cuda]
-        exclude: ^(build/|install/|log/|.*\.(mcap|db3|pcd|bag|bin|so|a|o|dylib|dll|exe)|.*/json\.hpp$)
+      - id: ruff-check
+        name: ruff (lint check)
+        entry: poetry run ruff check --config pyproject.toml --fix
+        language: system
+        types: [python]
+        pass_filenames: false
+      - id: ruff-format
+        name: ruff (format)
+        entry: poetry run ruff format --config pyproject.toml
+        language: system
+        types: [python]
+        pass_filenames: false
 
 exclude: .svg

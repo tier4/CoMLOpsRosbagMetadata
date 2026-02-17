@@ -4,7 +4,7 @@ Tools for recording metadata (e.g. vehicle configuration YAML) as a ROS 2 topic 
 
 ## co_mlops_rosbag_metadata
 
-This package provides the **CoMLOpsMetadataPublisherNode** C++ node, which publishes the contents of a YAML file as `std_msgs/String` on a configurable topic. The file at `path` is validated as parseable YAML before publishing; if it is not valid YAML, the node exits with an error. Start this node when recording; by including the topic (e.g. `/metadata`) in the bag, the config can be restored on replay.
+This package provides the **CoMLOpsMetadataPublisherNode** Python node, which publishes the contents of a YAML file as `std_msgs/String` on a configurable topic. The file at `path` is read and validated as parseable YAML; if it is not valid YAML, the node exits with an error. Start this node when recording; by including the topic (e.g. `/metadata`) in the bag, the config can be restored on replay.
 
 ### Installation
 
@@ -17,12 +17,22 @@ This package provides the **CoMLOpsMetadataPublisherNode** C++ node, which publi
 
 2. **Install ROS 2** (if not already installed): [Install ROS 2](https://docs.ros.org/en/humble/Installation.html) (Humble or later).
 
-3. **Install dependencies** using rosdep:
+3. **Install dependencies**:
 
-   ```bash
-   rosdep update
-   rosdep install --from-paths src --ignore-src -r -y
-   ```
+   - **ROS and system dependencies** (package.xml + rosdep):
+
+     ```bash
+     rosdep update
+     rosdep install --from-paths src --ignore-src -r -y
+     ```
+
+   - **Python-only dependencies** (optional; use Poetry for scripts or tooling):
+
+     ```bash
+     poetry install
+     ```
+
+   Convention: ROS-related packages are declared in `package.xml` and installed via rosdep; Python-only packages are managed in `pyproject.toml` (Poetry).
 
 ### Build
 

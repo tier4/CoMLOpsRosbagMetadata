@@ -16,6 +16,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Register local rosdep rules
+        run: |
+          echo "yaml file://${GITHUB_WORKSPACE}/rosdep.yaml" | sudo tee /etc/ros/rosdep/sources.list.d/50-comlops.list
+
       - name: Install dependencies
         run: |
           source /opt/ros/humble/setup.bash

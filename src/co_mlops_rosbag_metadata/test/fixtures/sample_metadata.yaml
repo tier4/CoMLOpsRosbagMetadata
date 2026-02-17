@@ -1,3 +1,3 @@
-# Sample metadata for node integration test
+# Sample metadata for node integration test (any valid YAML)
 vehicle_id: test_vehicle
 version: "1.0"
