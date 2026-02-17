@@ -40,13 +40,8 @@ This package provides the **CoMLOpsMetadataPublisherNode** Python node, which pu
 cd /path/to/CoMLOpsRosbagMetadata
 source /opt/ros/<ROS_DISTRIBUTION>/setup.bash
 colcon build --packages-select co_mlops_rosbag_metadata
-source install/setup.bash
-```
-
-To build with tests enabled (required before running tests), add `--cmake-args -DBUILD_TESTING=ON`:
-
-```bash
-colcon build --packages-select co_mlops_rosbag_metadata --cmake-args -DBUILD_TESTING=ON
+# To build with tests
+# colcon build --packages-select co_mlops_rosbag_metadata --cmake-args -DBUILD_TESTING=ON
 source install/setup.bash
 ```
 
