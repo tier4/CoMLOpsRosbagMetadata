@@ -6,7 +6,11 @@ This document defines the schema: field names, types, and semantics. For the rol
 
 ## Schema version and backward compatibility
 
-Format: **MAJOR.MINOR.PATCH** (e.g. `"0.1.0"`).
+Version format is **MAJOR.MINOR.PATCH** (e.g. `"0.1.0"`). A **writer** is a producer of metadata (e.g. the node that publishes the metadata as a ROS topic and records it into a rosbag). A **reader** is a consumer of metadata (e.g. the Co-MLOps Platform when it ingests bags, or any tool that reads the metadata from a rosbag).
+
+Interoperability between reader and writer is **guaranteed only when both use the same MAJOR version**. When MAJOR versions differ, interoperability is not guaranteed.
+
+Within the same MAJOR version, the components behave as follows:
 
 | Component | Role                                                                                                      |
 | --------- | --------------------------------------------------------------------------------------------------------- |
@@ -106,11 +110,11 @@ sensors:
 
 ## sensors structure
 
-`sensors` is an object whose keys are sensor categories (e.g. `lidar`, `camera`). Each value is a list of sensor/topic entries. Each entry has the common fields described under **sensors.\*** below; some sensor types add type-specific properties (see per-type sections).
+`sensors` is an object whose keys are sensor categories (e.g. `lidar`, `camera`). Each value is a list of sensor/topic entries. All properties for each sensor type are described in the per-type sections below.
 
-## sensors.\* (common fields)
+## sensors.lidar
 
-Every sensor entry (in `sensors.lidar`, `sensors.camera`, or any other `sensors.<type>`) has these fields:
+Each entry in `sensors.lidar` has the following properties:
 
 | Field            | Type   | Description                                                |
 | ---------------- | ------ | ---------------------------------------------------------- |
@@ -124,15 +128,20 @@ Every sensor entry (in `sensors.lidar`, `sensors.camera`, or any other `sensors.
 | `model`          | string | Sensor model identifier.                                   |
 | `maker`          | string | Sensor manufacturer or provider.                           |
 
-## sensors.lidar
-
-No type-specific properties. Each entry uses only the common fields in **sensors.\***.
-
 ## sensors.camera
 
-Entries under `sensors.camera` add the following type-specific properties:
+Each entry in `sensors.camera` has the following properties:
 
-| Field     | Type    | Description            |
-| --------- | ------- | ---------------------- |
-| `image_w` | integer | Image width (pixels).  |
-| `image_h` | integer | Image height (pixels). |
+| Field            | Type    | Description                                                  |
+| ---------------- | ------- | ------------------------------------------------------------ |
+| `original_topic` | string  | ROS topic name as recorded on the ECU.                       |
+| `mapped_topic`   | string  | Canonical topic name (e.g. for replay or mapping).           |
+| `frame_id`       | string  | TF frame ID for this sensor.                                 |
+| `type`           | string  | ROS message type (e.g. `"sensor_msgs/msg/CompressedImage"`). |
+| `hz`             | float   | Nominal publish rate (Hz).                                   |
+| `tos_delay_msec` | float   | Time-of-flight or trigger delay (ms).                        |
+| `name`           | string  | Human-readable sensor name.                                  |
+| `model`          | string  | Sensor model identifier.                                     |
+| `maker`          | string  | Sensor manufacturer or provider.                             |
+| `image_w`        | integer | Image width (pixels).                                        |
+| `image_h`        | integer | Image height (pixels).                                       |
