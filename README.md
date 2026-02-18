@@ -1,10 +1,14 @@
-# CoMLOpsRosbagMetadata
+# Co-MLOps Rosbag Metadata
 
-Tools for recording metadata (e.g. vehicle configuration YAML) as a ROS 2 topic into rosbag during data collection. **CoMLOps** is a platform for sharing rosbag data collected from vehicles.
+Tools for recording **Co-MLOps Rosbag Metadata** as a ROS 2 topic into rosbag during data collection, so that bags can be handled uniformly on the Co-MLOps Platform.
+
+## Co-MLOps Platform and this repository
+
+**Co-MLOps Platform** is a vehicle data sharing platform. By uploading rosbag data to the cloud, users can visualize, manage, and share that data and use it for MLOps. The metadata managed in this repository (**Co-MLOps Rosbag Metadata**) acts as middleware for working with rosbags on the Co-MLOps Platform: by recording the metadata as a ROS topic together with the rosbag and including it in the bag, data collected from any vehicle platform can be described in a unified way and handled consistently on the Co-MLOps Platform. The metadata format (sensing system, modules, sensors, etc.) is defined in [SCHEMA.md](SCHEMA.md).
 
 ## co_mlops_rosbag_metadata
 
-This package provides the **CoMLOpsMetadataPublisherNode** Python node, which publishes the contents of a YAML file as `std_msgs/String` on a configurable topic. The file at `path` is read and validated as parseable YAML; if it is not valid YAML, the node exits with an error. Start this node when recording; by including the topic (e.g. `/metadata`) in the bag, the config can be restored on replay.
+This package provides the **Co-MLOps** metadata publisher node (`CoMLOpsMetadataPublisherNode`), which publishes the contents of a YAML file as `std_msgs/String` on a configurable topic. The file at `path` is read and validated as parseable YAML; if it is not valid YAML, the node exits with an error. Start this node when recording; by including the topic (e.g. `/metadata`) in the bag, the config can be restored on replay.
 
 ### Installation
 
@@ -69,21 +73,6 @@ The last command prints the test output; omit it if you only need the pass/fail 
 #### Example
 
 ```bash
-ros2 launch co_mlops_rosbag_metadata co_mlops_rosbag_metadata_publisher.launch.xml \
-  path:=/path/to/config.yaml
-```
-
-Optional arguments: `topic`, `delay_before_first_publish`, `frequency`.
-
-#### Recording example
-
-Start the bag in one terminal, then run the node in another:
-
-```bash
-# Terminal 1
-ros2 bag record -a
-
-# Terminal 2
 ros2 launch co_mlops_rosbag_metadata co_mlops_rosbag_metadata_publisher.launch.xml \
   path:=/path/to/config.yaml
 ```

@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "comlops-rosbag-metadata"
 version = "0.1.0"
-description = "Python-only dependencies for CoMLOpsRosbagMetadata (ROS deps are in package.xml + rosdep)"
+description = "Python-only dependencies for Co-MLOps Rosbag Metadata (ROS deps are in package.xml + rosdep)"
 readme = "README.md"
 authors = ["TIER IV, Inc."]
 license = "Apache-2.0"
