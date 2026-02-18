@@ -2,12 +2,7 @@
 
 Schema version: 0.1.0
 
-This metadata describes _what_ was recorded: which sensing system (e.g. vehicle), which module (ECU), and which sensors produced the data. It is published to a ROS 2 topic (e.g. `/metadata`) and recorded with the bag so the Co-MLOps Platform—and anyone who receives the bag—can handle it in a unified way without out-of-band configs. One metadata file describes one module (one ECU).
-
-## Concepts
-
-- **Sensing system**: A collection of modules (e.g. one or more ECUs); the top-level unit (e.g. a vehicle).
-- **Module**: An ECU that records ROS topics into rosbag(s). One metadata file describes one module. One ECU saves at most one type of rosbag.
+This document defines the schema: field names, types, and semantics. For the role of the metadata, Co-MLOps Platform, and terminology (sensing system, module), see [README.md](README.md).
 
 ## Schema version and backward compatibility
 

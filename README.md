@@ -2,9 +2,20 @@
 
 Tools for recording **Co-MLOps Rosbag Metadata** as a ROS 2 topic into rosbag during data collection, so that bags can be handled uniformly on the Co-MLOps Platform.
 
-## Co-MLOps Platform and this repository
+## Co-MLOps Platform
 
-**Co-MLOps Platform** is a vehicle data sharing platform. By uploading rosbag data to the cloud, users can visualize, manage, and share that data and use it for MLOps. The metadata managed in this repository (**Co-MLOps Rosbag Metadata**) acts as middleware for working with rosbags on the Co-MLOps Platform: by recording the metadata as a ROS topic together with the rosbag and including it in the bag, data collected from any vehicle platform can be described in a unified way and handled consistently on the Co-MLOps Platform. The metadata format (sensing system, modules, sensors, etc.) is defined in [SCHEMA.md](SCHEMA.md).
+**Co-MLOps Platform** is a vehicle data sharing platform mainly for sharing data used in developing ADAS and end-to-end (E2E) autonomous driving models. By uploading rosbag data to the cloud, users can visualize, manage, and share that data and use it for MLOps.
+
+## Co-MLOps Rosbag Metadata
+
+Co-MLOps Rosbag Metadata is middleware for working with rosbags on the Co-MLOps Platform. By recording the metadata as a ROS topic together with the rosbag and including it in the bag, data collected from any vehicle can be described in a unified way and handled consistently on the platform—without out-of-band configs. The metadata is embedded in the rosbag saved by each module; on the Co-MLOps Platform, rosbags recorded with the same sensing system ID are automatically merged.
+
+### Concepts
+
+- **Module**: An ECU that subscribes to ROS topics and saves them as rosbag. To support cases where rosbags are saved in a distributed manner across multiple ECUs, Co-MLOps Rosbag Metadata is embedded as a ROS topic in the rosbag saved by each module.
+- **Sensing system**: A collection of modules. For example, if a single central ECU subscribes to all sensor topics and saves them as rosbag, that sensing system has one module. If recording is distributed across N ECUs (e.g. when the number of sensors is large), the sensing system has N modules.
+
+The schema (field names, types, and semantics) is defined in [SCHEMA.md](SCHEMA.md).
 
 ## co_mlops_rosbag_metadata
 
