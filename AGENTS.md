@@ -13,6 +13,7 @@ All text must be written in English.
     Before creating or finalizing a commit or PR, check the full text for such phrases and remove them.
 - Before reading large-token files (images, videos, PDFs, etc.), always ask the user for confirmation first.
 - When unused packages or source files (not referenced anywhere in the codebase) are found, proactively suggest their removal — but never delete them without user approval.
+- **Co-MLOps**: When referring to the Co-MLOps proper noun (platform, concept, etc.), always spell it as **Co-MLOps** (hyphen, capital C, M, L, O; lowercase p, s).
 
 ## Security
 

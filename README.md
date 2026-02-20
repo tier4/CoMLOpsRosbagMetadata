@@ -1,10 +1,25 @@
-# CoMLOpsRosbagMetadata
+# Co-MLOps Rosbag Metadata
 
-Tools for recording metadata (e.g. vehicle configuration YAML) as a ROS 2 topic into rosbag during data collection. **CoMLOps** is a platform for sharing rosbag data collected from vehicles.
+Tools for recording **Co-MLOps Rosbag Metadata** as a ROS 2 topic into rosbag during data collection, so that bags can be handled uniformly on the Co-MLOps Platform.
+
+## Co-MLOps Platform
+
+**Co-MLOps Platform** is a vehicle data sharing platform mainly for sharing data used in developing ADAS and end-to-end (E2E) autonomous driving models. By uploading rosbag data to the cloud, users can visualize, manage, and share that data and use it for MLOps.
+
+## Co-MLOps Rosbag Metadata
+
+Co-MLOps Rosbag Metadata is middleware for working with rosbags on the Co-MLOps Platform. By recording the metadata as a ROS topic together with the rosbag and including it in the bag, data collected from any vehicle can be described in a unified way and handled consistently on the platform—without out-of-band configs. The metadata is embedded in the rosbag saved by each module; on the Co-MLOps Platform, rosbags recorded with the same sensing system ID are automatically merged.
+
+### Concepts
+
+- **Module**: An ECU that subscribes to ROS topics and saves them as rosbag. To support cases where rosbags are saved in a distributed manner across multiple ECUs, Co-MLOps Rosbag Metadata is embedded as a ROS topic in the rosbag saved by each module.
+- **Sensing system**: A collection of modules. For example, if a single central ECU subscribes to all sensor topics and saves them as rosbag, that sensing system has one module. If recording is distributed across N ECUs (e.g. when the number of sensors is large), the sensing system has N modules.
+
+The schema (field names, types, and semantics) is defined in [SCHEMA.md](SCHEMA.md).
 
 ## co_mlops_rosbag_metadata
 
-This package provides the **CoMLOpsMetadataPublisherNode** Python node, which publishes the contents of a YAML file as `std_msgs/String` on a configurable topic. The file at `path` is read and validated as parseable YAML; if it is not valid YAML, the node exits with an error. Start this node when recording; by including the topic (e.g. `/metadata`) in the bag, the config can be restored on replay.
+This package provides the **Co-MLOps** metadata publisher node (`CoMLOpsMetadataPublisherNode`), which publishes the contents of a YAML file as `std_msgs/String` on a configurable topic. The file at `path` is read and validated as parseable YAML; if it is not valid YAML, the node exits with an error. Start this node when recording; by including the topic (e.g. `/metadata`) in the bag, the config can be restored on replay.
 
 ### Installation
 
@@ -69,21 +84,6 @@ The last command prints the test output; omit it if you only need the pass/fail 
 #### Example
 
 ```bash
-ros2 launch co_mlops_rosbag_metadata co_mlops_rosbag_metadata_publisher.launch.xml \
-  path:=/path/to/config.yaml
-```
-
-Optional arguments: `topic`, `delay_before_first_publish`, `frequency`.
-
-#### Recording example
-
-Start the bag in one terminal, then run the node in another:
-
-```bash
-# Terminal 1
-ros2 bag record -a
-
-# Terminal 2
 ros2 launch co_mlops_rosbag_metadata co_mlops_rosbag_metadata_publisher.launch.xml \
   path:=/path/to/config.yaml
 ```
