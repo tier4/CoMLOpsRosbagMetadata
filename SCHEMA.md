@@ -56,8 +56,6 @@ sensors:
       hz: 20.0
       tos_offset: 50.0
       name: "Camera Front Narrow"
-      image_w: 3840
-      image_h: 2160
       timestamp_offset: 0.0
     - topic: "/sensing/camera/camera1/image_raw/compressed"
       mapped_topic: "/sensing/camera/front_wide/image_raw/compressed"
@@ -66,8 +64,6 @@ sensors:
       hz: 20.0
       tos_offset: 50.0
       name: "Camera Front Wide"
-      image_w: 3840
-      image_h: 2160
       timestamp_offset: 0.0
     - topic: "/sensing/camera/camera2/image_raw/compressed"
       mapped_topic: "/sensing/camera/front_right/image_raw/compressed"
@@ -76,8 +72,6 @@ sensors:
       hz: 20.0
       tos_offset: 50.0
       name: "Camera Front Right"
-      image_w: 2880
-      image_h: 1860
       timestamp_offset: 0.0
     - topic: "/sensing/camera/camera3/image_raw/compressed"
       mapped_topic: "/sensing/camera/back_right/image_raw/compressed"
@@ -86,8 +80,6 @@ sensors:
       hz: 20.0
       tos_offset: 50.0
       name: "Camera Back Right"
-      image_w: 2880
-      image_h: 1860
       timestamp_offset: 0.0
 ```
 
@@ -159,14 +151,12 @@ The figure below illustrates the LiDAR scan timing model.
 
 Entries under `sensors.camera` add the following type-specific properties in addition to the common fields in **sensors.\***:
 
-| Field              | Presence | Type    | Description                                                                                                                                                                                                                              |
-| ------------------ | -------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type`             | required | string  | ROS message type. Allowed values for camera are described in the Co-MLOps Platform documentation.                                                                                                                                        |
-| `mapped_topic`     | required | string  | Reserved topic name on the Co-MLOps Platform that this sensor's `topic` is mapped to; used for visualization layout and for Co-MLOps Dataset (nuScenes fork) conversion. See below for allowed values (camera).                          |
-| `image_w`          | required | integer | Image width (pixels).                                                                                                                                                                                                                    |
-| `image_h`          | required | integer | Image height (pixels).                                                                                                                                                                                                                   |
-| `tos_offset`       | optional | float   | Offset (ms) from ToS to the temporal center of the camera exposure. Sign: positive = after ToS, negative = before ToS. See below for definition and figure. When omitted, the Co-MLOps Platform interprets it as 0.                      |
-| `timestamp_offset` | optional | float   | Deviation (ms) of the message `header.stamp` on `topic` from the time point that `tos_offset` refers to. Positive = stamp is later than tos_offset; negative = stamp is earlier. When omitted, the Co-MLOps Platform interprets it as 0. |
+| Field              | Presence | Type   | Description                                                                                                                                                                                                                              |
+| ------------------ | -------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`             | required | string | ROS message type. Allowed values for camera are described in the Co-MLOps Platform documentation.                                                                                                                                        |
+| `mapped_topic`     | required | string | Reserved topic name on the Co-MLOps Platform that this sensor's `topic` is mapped to; used for visualization layout and for Co-MLOps Dataset (nuScenes fork) conversion. See below for allowed values (camera).                          |
+| `tos_offset`       | optional | float  | Offset (ms) from ToS to the temporal center of the camera exposure. Sign: positive = after ToS, negative = before ToS. See below for definition and figure. When omitted, the Co-MLOps Platform interprets it as 0.                      |
+| `timestamp_offset` | optional | float  | Deviation (ms) of the message `header.stamp` on `topic` from the time point that `tos_offset` refers to. Positive = stamp is later than tos_offset; negative = stamp is earlier. When omitted, the Co-MLOps Platform interprets it as 0. |
 
 ### mapped_topic (camera)
 
@@ -204,7 +194,8 @@ Variables in the figure:
 
 - **exposure_time**: Duration each line is exposed (or, for global shutter, the simultaneous exposure duration). Assumed to be fixed (constant).
 - **t_row**: Time between the start of exposure for consecutive lines. Rolling shutter: > 0; global shutter: = 0.
+- **num_scan_rows**: Number of horizontal scan lines (rolling shutter and global shutter). It often coincides with the vertical resolution of the image.
 - **shutter_start_offset**: Time from ToS to the start of the first line's exposure. Sign: positive when the start is after (later than) ToS; negative when it is before (earlier than) ToS.
-- **shutter_center_offset**: Time from the start of the first line's exposure to the temporal center of the middle line's exposure. Always positive. For rolling shutter: `(image_h/2) × t_row + exposure_time/2`.
+- **shutter_center_offset**: Time from the start of the first line's exposure to the temporal center of the middle line's exposure. Always positive. For rolling shutter: `(num_scan_rows/2) × t_row + exposure_time/2`.
 
 **Formula:** `tos_offset = shutter_start_offset + shutter_center_offset`
