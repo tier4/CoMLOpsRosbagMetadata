@@ -17,6 +17,10 @@ Co-MLOps Rosbag Metadata is middleware for working with rosbags on the Co-MLOps 
 
 The schema (field names, types, and semantics) is defined in [SCHEMA.md](SCHEMA.md).
 
+### Versioning
+
+This repository uses two independent version numbers: **package version** matches the repository release version (or `0.0.0` when unreleased), and **schema version** is defined in [SCHEMA.md](SCHEMA.md). Release tags follow `vX.X.X-schema-vY.Y.Y` (e.g. `v0.2.0-schema-v0.1.0`); the package version written into the build is `X.X.X-schema-Y.Y.Y`. They can diverge.
+
 ## co_mlops_rosbag_metadata
 
 This package provides the **Co-MLOps** metadata publisher node (`CoMLOpsMetadataPublisherNode`), which publishes the contents of a YAML file as `std_msgs/String` on a configurable topic. The file at `path` is read and validated as parseable YAML; if it is not valid YAML, the node exits with an error. Start this node when recording; by including the topic (e.g. `/metadata`) in the bag, the config can be restored on replay.

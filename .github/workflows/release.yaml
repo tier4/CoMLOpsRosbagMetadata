@@ -1,0 +1,98 @@
+name: release
+
+on:
+  push:
+    tags:
+      - v*-schema-v*
+
+jobs:
+  release:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Parse tag and set package version
+        id: version
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          # Tag format: vX.X.X-schema-vY.Y.Y
+          PKG="${TAG#v}"
+          PKG="${PKG%-schema-v*}"
+          SCHEMA="${TAG##*-schema-v}"
+          VERSION="${PKG}-schema-${SCHEMA}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Skip if version already replaced
+        id: skip
+        run: |
+          if grep -q '<version>0.0.0</version>' src/co_mlops_rosbag_metadata/package.xml; then
+            echo "replace=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "replace=no" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create release branch and commit version replacement
+        if: steps.skip.outputs.replace == 'yes'
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          TAG="${{ steps.version.outputs.tag }}"
+          BRANCH="release/${TAG}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "${BRANCH}"
+          sed -i "s|<version>0.0.0</version>|<version>${VERSION}</version>|g" \
+            src/co_mlops_rosbag_metadata/package.xml
+          sed -i 's/^version = "0.0.0"/version = "'"${VERSION}"'"/' pyproject.toml
+          git add src/co_mlops_rosbag_metadata/package.xml pyproject.toml
+          git commit -m "chore: set version to ${VERSION} for release"
+          git push origin "${BRANCH}"
+
+      - name: Move tag to version-replacement commit
+        if: steps.skip.outputs.replace == 'yes'
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+          git push origin ":refs/tags/${TAG}"
+          git tag "${TAG}"
+          git push origin "${TAG}"
+
+  build:
+    runs-on: ubuntu-22.04
+    container:
+      image: ros:humble-ros-base-jammy
+    needs: release
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: refs/tags/${{ github.ref_name }}
+
+      - name: Register local rosdep rules
+        run: |
+          echo "yaml file://${GITHUB_WORKSPACE}/rosdep.yaml" | sudo tee /etc/ros/rosdep/sources.list.d/50-comlops.list
+
+      - name: Install dependencies
+        run: |
+          source /opt/ros/humble/setup.bash
+          rosdep update
+          rosdep install --from-paths src --ignore-src -r -y
+
+      - name: Build with tests
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build --packages-select co_mlops_rosbag_metadata \
+            --cmake-args -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON
+
+      - name: Run tests
+        env:
+          ROS_LOCALHOST_ONLY: 1
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          colcon test --packages-select co_mlops_rosbag_metadata
+          colcon test-result --verbose --all
