@@ -6,7 +6,7 @@ This document defines the schema: field names, types, and semantics. For the rol
 
 ## Schema version and backward compatibility
 
-Version format is **MAJOR.MINOR.PATCH** (e.g. `"0.1.0"`). A **writer** is a producer of metadata (e.g. the node that publishes the metadata as a ROS topic and records it into a rosbag). A **reader** is a consumer of metadata (e.g. the Co-MLOps Platform when it ingests bags, or any tool that reads the metadata from a rosbag).
+Version format is **MAJOR.MINOR.PATCH** (e.g. `"0.1.0"`). A **writer** is a producer of metadata (e.g. the node that publishes the metadata as a ROS topic and records it into a rosbag). The **reader** is the Co-MLOps Platform (when it ingests bags or reads the metadata from a rosbag).
 
 Interoperability between reader and writer is **guaranteed only when both use the same MAJOR version**. When MAJOR versions differ, interoperability is not guaranteed.
 
@@ -28,6 +28,7 @@ sensing_system_name: "id1_rav4"
 sensing_system_id: "6yb9g3aj"
 module_id: "qu159UZU"
 module_name: "ecu0"
+sibling_module_ids: ["W7LF521y"]
 storage_type: "mcap"
 sensors:
   lidar:
@@ -94,18 +95,19 @@ sensors:
 
 **Presence** in the tables below has the following meaning:
 
-- **required**: The field MUST be present and MUST NOT be `null`. Writers must supply a value; readers may assume the field exists and is non-null.
-- **optional**: The field MAY be omitted or MAY be set to `null`. Writers may leave it absent or set it to `null`; readers must handle both cases.
+- **required**: The field MUST be present. Users must supply the field; the Co-MLOps Platform may assume the field exists.
+- **optional**: The field MAY be omitted. When not set, the Co-MLOps Platform assigns a default value (see the following sections for each default).
 
-| Field                 | Presence | Type   | Description                                                                                                                                                            |
-| --------------------- | -------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `schema_version`      | required | string | Schema version (see above). Format: `MAJOR.MINOR.PATCH`.                                                                                                               |
-| `sensing_system_name` | optional | string | Human-readable label for the sensing system (e.g. vehicle name). Not required to be unique. When omitted, the Co-MLOps Platform uses `sensing_system_id` in its place. |
-| `sensing_system_id`   | required | string | Unique identifier of the sensing system. Must be unique within the Co-MLOps Platform (issued by the Platform).                                                         |
-| `module_id`           | required | string | Unique identifier of this module (ECU). Must be unique within the same sensing system.                                                                                 |
-| `module_name`         | optional | string | Human-readable module label (e.g. `"ecu0"`). When omitted, the Co-MLOps Platform uses `module_id` in its place.                                                        |
-| `storage_type`        | required | string | Bag storage format. Supported: `"mcap"`, `"sqlite3"`.                                                                                                                  |
-| `sensors`             | required | object | Sensor lists keyed by type (`lidar`, `camera`, etc.). See below.                                                                                                       |
+| Field                 | Presence | Type            | Description                                                                                                                                                                                                                                                                       |
+| --------------------- | -------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `schema_version`      | required | string          | Schema version (see above). Format: `MAJOR.MINOR.PATCH`.                                                                                                                                                                                                                          |
+| `sensing_system_name` | optional | string          | Human-readable label for the sensing system (e.g. vehicle name). Not required to be unique. When omitted, the Co-MLOps Platform uses `sensing_system_id` in its place.                                                                                                            |
+| `sensing_system_id`   | required | string          | Unique identifier of the sensing system. Must be unique within the Co-MLOps Platform (issued by the Platform).                                                                                                                                                                    |
+| `module_id`           | required | string          | Unique identifier of this module (ECU). Must be unique within the same sensing system.                                                                                                                                                                                            |
+| `module_name`         | optional | string          | Human-readable module label (e.g. `"ecu0"`). When omitted, the Co-MLOps Platform uses `module_id` in its place.                                                                                                                                                                   |
+| `sibling_module_ids`  | required | array of string | List of module IDs of _other_ modules in the same sensing system (excludes this module's `module_id`). When this module is the only one in the sensing system, use an empty list `[]`. Used by the Co-MLOps Platform to associate and merge rosbags from the same sensing system. |
+| `storage_type`        | required | string          | Bag storage format. Supported: `"mcap"`, `"sqlite3"`.                                                                                                                                                                                                                             |
+| `sensors`             | required | object          | Sensor lists keyed by type (`lidar`, `camera`, etc.). See below.                                                                                                                                                                                                                  |
 
 ## sensors structure
 
@@ -126,13 +128,13 @@ Every sensor entry has these fields.
 
 Each entry in `sensors.lidar` uses the common fields in **sensors.\*** and has the following properties:
 
-| Field              | Presence | Type   | Description                                                                                                                                                                                                    |
-| ------------------ | -------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type`             | required | string | ROS message type. Allowed values for lidar are described in the Co-MLOps Platform documentation.                                                                                                               |
-| `mapped_topic`     | required | string | Reserved topic name on the Co-MLOps Platform that this sensor's `topic` is mapped to; used for visualization layout and for Co-MLOps Dataset (nuScenes fork) conversion. See below for allowed values (lidar). |
-| `tos_offset`       | required | float  | Offset (ms) from ToS to the LiDAR scan start. Sign: positive = after ToS, negative = before ToS. See below for definition and figure.                                                                          |
-| `timestamp_offset` | required | float  | Deviation (ms) of the message `header.stamp` on `topic` from the time point that `tos_offset` refers to. Positive = stamp is later than tos_offset; negative = stamp is earlier.                               |
-| `scan_runtime`     | optional | float  | Duration (ms) from the start to the end of one scan. When omitted, the Co-MLOps Platform uses `1000 / hz` (one period in ms).                                                                                  |
+| Field              | Presence | Type   | Description                                                                                                                                                                                                                              |
+| ------------------ | -------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`             | required | string | ROS message type. Allowed values for lidar are described in the Co-MLOps Platform documentation.                                                                                                                                         |
+| `mapped_topic`     | required | string | Reserved topic name on the Co-MLOps Platform that this sensor's `topic` is mapped to; used for visualization layout and for Co-MLOps Dataset (nuScenes fork) conversion. See below for allowed values (lidar).                           |
+| `tos_offset`       | optional | float  | Offset (ms) from ToS to the LiDAR scan start. Sign: positive = after ToS, negative = before ToS. See below for definition and figure. When omitted, the Co-MLOps Platform interprets it as 0.                                            |
+| `timestamp_offset` | optional | float  | Deviation (ms) of the message `header.stamp` on `topic` from the time point that `tos_offset` refers to. Positive = stamp is later than tos_offset; negative = stamp is earlier. When omitted, the Co-MLOps Platform interprets it as 0. |
+| `scan_runtime`     | optional | float  | Duration (ms) from the start to the end of one scan. When omitted, the Co-MLOps Platform uses `1000 / hz` (one period in ms).                                                                                                            |
 
 ### mapped_topic (lidar)
 
@@ -157,14 +159,14 @@ The figure below illustrates the LiDAR scan timing model.
 
 Entries under `sensors.camera` add the following type-specific properties in addition to the common fields in **sensors.\***:
 
-| Field              | Presence | Type    | Description                                                                                                                                                                                                     |
-| ------------------ | -------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type`             | required | string  | ROS message type. Allowed values for camera are described in the Co-MLOps Platform documentation.                                                                                                               |
-| `mapped_topic`     | required | string  | Reserved topic name on the Co-MLOps Platform that this sensor's `topic` is mapped to; used for visualization layout and for Co-MLOps Dataset (nuScenes fork) conversion. See below for allowed values (camera). |
-| `image_w`          | required | integer | Image width (pixels).                                                                                                                                                                                           |
-| `image_h`          | required | integer | Image height (pixels).                                                                                                                                                                                          |
-| `tos_offset`       | required | float   | Offset (ms) from ToS to the temporal center of the camera exposure. Sign: positive = after ToS, negative = before ToS. See below for definition and figure.                                                     |
-| `timestamp_offset` | required | float   | Deviation (ms) of the message `header.stamp` on `topic` from the time point that `tos_offset` refers to. Positive = stamp is later than tos_offset; negative = stamp is earlier.                                |
+| Field              | Presence | Type    | Description                                                                                                                                                                                                                              |
+| ------------------ | -------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`             | required | string  | ROS message type. Allowed values for camera are described in the Co-MLOps Platform documentation.                                                                                                                                        |
+| `mapped_topic`     | required | string  | Reserved topic name on the Co-MLOps Platform that this sensor's `topic` is mapped to; used for visualization layout and for Co-MLOps Dataset (nuScenes fork) conversion. See below for allowed values (camera).                          |
+| `image_w`          | required | integer | Image width (pixels).                                                                                                                                                                                                                    |
+| `image_h`          | required | integer | Image height (pixels).                                                                                                                                                                                                                   |
+| `tos_offset`       | optional | float   | Offset (ms) from ToS to the temporal center of the camera exposure. Sign: positive = after ToS, negative = before ToS. See below for definition and figure. When omitted, the Co-MLOps Platform interprets it as 0.                      |
+| `timestamp_offset` | optional | float   | Deviation (ms) of the message `header.stamp` on `topic` from the time point that `tos_offset` refers to. Positive = stamp is later than tos_offset; negative = stamp is earlier. When omitted, the Co-MLOps Platform interprets it as 0. |
 
 ### mapped_topic (camera)
 
