@@ -3,7 +3,7 @@ name: release
 on:
   push:
     tags:
-      - v*-schema-v*
+      - v*-*
 
 jobs:
   release:
@@ -21,11 +21,11 @@ jobs:
         id: version
         run: |
           TAG="${GITHUB_REF#refs/tags/}"
-          # Tag format: vX.X.X-schema-vY.Y.Y
-          PKG="${TAG#v}"
-          PKG="${PKG%-schema-v*}"
-          SCHEMA="${TAG##*-schema-v}"
-          VERSION="${PKG}-schema-${SCHEMA}"
+          # Tag format: vX.X.X-Y.Y.Y (X = package version, Y = schema version)
+          REST="${TAG#v}"
+          PKG="${REST%-*}"
+          SCHEMA="${REST#*-}"
+          VERSION="${PKG}-${SCHEMA}"
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
           echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
 

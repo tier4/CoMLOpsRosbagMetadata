@@ -19,7 +19,7 @@ The schema (field names, types, and semantics) is defined in [SCHEMA.md](SCHEMA.
 
 ### Versioning
 
-This repository uses two independent version numbers: **package version** matches the repository release version (or `0.0.0` when unreleased), and **schema version** is defined in [SCHEMA.md](SCHEMA.md). Release tags follow `vX.X.X-schema-vY.Y.Y` (e.g. `v0.2.0-schema-v0.1.0`); the package version written into the build is `X.X.X-schema-Y.Y.Y`. They can diverge.
+This repository uses two independent version numbers: **package version** matches the repository release version (or `0.0.0` when unreleased), and **schema version** is defined in [SCHEMA.md](SCHEMA.md). Release tags follow `vX.X.X-Y.Y.Y` (e.g. `v0.2.0-0.1.0`), where X.X.X is the package version and Y.Y.Y is the schema version; the package version written into the build is `X.X.X-Y.Y.Y`. They can diverge.
 
 ## co_mlops_rosbag_metadata
 
