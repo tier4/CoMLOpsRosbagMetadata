@@ -1,6 +1,6 @@
 # Copyright 2026 TIER IV, Inc.
 
-"""Integration test for CoMLOpsMetadataPublisherNode: launch the node and check /metadata content."""
+"""Integration test for the Co-MLOps Metadata Publisher Node (CoMLOpsMetadataPublisherNode): launch the node and check /metadata content."""
 
 import os
 import sys

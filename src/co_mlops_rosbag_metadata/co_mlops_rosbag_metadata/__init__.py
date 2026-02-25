@@ -1,3 +1,3 @@
 # Copyright 2026 TIER IV, Inc.
 
-"""CoMLOps rosbag metadata package."""
+"""Co-MLOps rosbag metadata package."""
