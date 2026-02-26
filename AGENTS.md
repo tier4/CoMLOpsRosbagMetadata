@@ -35,6 +35,10 @@ All text must be written in English.
 
 ## Git and CI
 
+### Remote repository
+
+When making changes to the remote repository (e.g. push, creating a pull request, merging a PR), always obtain the user's consent before executing. Do not push, open a PR, or merge without explicit approval.
+
 ### Commit and PR conventions
 
 - Commit messages and PR titles must follow [Conventional Commits](https://www.conventionalcommits.org/) (e.g., `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`, `ci:`).
