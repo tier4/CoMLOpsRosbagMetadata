@@ -30,9 +30,61 @@ module_id: "qu159UZU"
 module_name: "ecu0"
 sibling_module_ids: ["W7LF521y"]
 storage_type: "mcap"
+
+hardwares:
+  lidar:
+    - id: seyond_falcon_k
+      maker: Seyond
+      model: Falcon K
+      fov:
+        h: 120
+        v: 25
+      resolution:
+        h: 0.09
+        v: 0.08
+    - id: seyond_robin_w
+      maker: Seyond
+      model: Robin W
+      fov:
+        h: 120
+        v: 70
+      resolution:
+        h: 0.1
+        v: 0.36
+  camera:
+    - id: tieriv_c3_30
+      maker: TIER IV
+      model: C3-30
+      resolution:
+        h: 2160
+        w: 3840
+      fov:
+        h: 30
+        v: 16.8
+    - id: tieriv_c3_123
+      maker: TIER IV
+      model: C3-123
+      resolution:
+        h: 2160
+        w: 3840
+      fov:
+        h: 123
+        v: 66
+    - id: tieriv_c2_120
+      maker: TIER IV
+      model: C2-120
+      resolution:
+        h: 1860
+        w: 2880
+      fov:
+        h: 120
+        v: 73
+
 sensors:
   lidar:
-    - topic: "/sensing/lidar/front/nebula_packets"
+    - hardware: seyond_falcon_k
+      direction: 0
+      topic: "/sensing/lidar/front/nebula_packets"
       mapped_topic: "/sensing/lidar/front/lidar_packets"
       frame_id: "lidar_front"
       type: "nebula_msgs/msg/NebulaPackets"
@@ -40,7 +92,9 @@ sensors:
       tos_offset: 0.0
       timestamp_offset: 0.0
       name: "LiDAR Front"
-    - topic: "/sensing/lidar/right/nebula_packets"
+    - hardware: seyond_falcon_k
+      direction: -90
+      topic: "/sensing/lidar/right/nebula_packets"
       mapped_topic: "/sensing/lidar/right/lidar_packets"
       frame_id: "lidar_right"
       type: "nebula_msgs/msg/NebulaPackets"
@@ -49,7 +103,9 @@ sensors:
       timestamp_offset: 0.0
       name: "LiDAR Right"
   camera:
-    - topic: "/sensing/camera/camera0/image_raw/compressed"
+    - hardware: tieriv_c3_30
+      direction: 0
+      topic: "/sensing/camera/camera0/image_raw/compressed"
       mapped_topic: "/sensing/camera/front_narrow/image_raw/compressed"
       frame_id: "camera0/camera_link"
       type: "sensor_msgs/msg/CompressedImage"
@@ -57,7 +113,9 @@ sensors:
       tos_offset: 50.0
       name: "Camera Front Narrow"
       timestamp_offset: 0.0
-    - topic: "/sensing/camera/camera1/image_raw/compressed"
+    - hardware: tieriv_c3_123
+      direction: 0
+      topic: "/sensing/camera/camera1/image_raw/compressed"
       mapped_topic: "/sensing/camera/front_wide/image_raw/compressed"
       frame_id: "camera1/camera_link"
       type: "sensor_msgs/msg/CompressedImage"
@@ -65,7 +123,9 @@ sensors:
       tos_offset: 50.0
       name: "Camera Front Wide"
       timestamp_offset: 0.0
-    - topic: "/sensing/camera/camera2/image_raw/compressed"
+    - hardware: tieriv_c2_120
+      direction: -60
+      topic: "/sensing/camera/camera2/image_raw/compressed"
       mapped_topic: "/sensing/camera/front_right/image_raw/compressed"
       frame_id: "camera2/camera_link"
       type: "sensor_msgs/msg/CompressedImage"
@@ -73,7 +133,9 @@ sensors:
       tos_offset: 50.0
       name: "Camera Front Right"
       timestamp_offset: 0.0
-    - topic: "/sensing/camera/camera3/image_raw/compressed"
+    - hardware: tieriv_c2_120
+      direction: -120
+      topic: "/sensing/camera/camera3/image_raw/compressed"
       mapped_topic: "/sensing/camera/back_right/image_raw/compressed"
       frame_id: "camera3/camera_link"
       type: "sensor_msgs/msg/CompressedImage"
