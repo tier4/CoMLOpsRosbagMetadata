@@ -13,7 +13,7 @@ pyyaml = "^6.0"
 pydantic = "2.12.5"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.0"
+pytest = ">=8,<10"
 ruff = "^0.8"
 lark = "^1.0"
 # ROS test deps (rclpy, launch_testing, etc.) stay in package.xml.
