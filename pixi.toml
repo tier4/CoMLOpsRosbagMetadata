@@ -1,0 +1,79 @@
+[workspace]
+name = "co-mlops-rosbag-metadata"
+version = "0.0.0"
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+# Distro-agnostic toolchain + Python deps, inherited by every environment.
+[dependencies]
+colcon-common-extensions = "*"
+cmake = "*"
+c-compiler = "*"       # project(co_mlops_rosbag_metadata) enables C/CXX by default
+cxx-compiler = "*"
+pyyaml = "*"           # runtime: the node imports `yaml`
+pytest = "<8"          # test; pytest 8 drops the pytest_pycollect_makemodule(path)
+                       # hookspec that RoboStack's launch_testing plugin still uses
+ruff = "*"             # lint/format (config from pyproject.toml)
+lark = "*"             # lets pytest load the launch_testing plugin
+
+# Each distro builds into its own base keyed on $PIXI_ENVIRONMENT_NAME so
+# switching -e <distro> never reuses another distro's colcon/CMake cache.
+[tasks.build]
+cmd = 'colcon build --packages-select co_mlops_rosbag_metadata --build-base "build/$PIXI_ENVIRONMENT_NAME" --install-base "install/$PIXI_ENVIRONMENT_NAME" --cmake-args -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON'
+
+[tasks.test]
+depends-on = ["build"]
+cmd = 'colcon test --packages-select co_mlops_rosbag_metadata --build-base "build/$PIXI_ENVIRONMENT_NAME" --install-base "install/$PIXI_ENVIRONMENT_NAME" --event-handlers console_direct+ && colcon test-result --test-result-base "build/$PIXI_ENVIRONMENT_NAME" --verbose'
+
+[tasks.launch]
+args = [{ arg = "path" }]
+depends-on = ["build"]
+cmd = 'bash -c "source install/$PIXI_ENVIRONMENT_NAME/setup.bash && ros2 launch co_mlops_rosbag_metadata co_mlops_rosbag_metadata_publisher.launch.xml path:={{ path }}"'
+
+[tasks.lint]
+cmd = "ruff check --config pyproject.toml ."
+
+[tasks.format]
+cmd = "ruff format --config pyproject.toml ."
+
+[tasks.clean]
+cmd = "rm -rf build install log"
+
+[feature.humble]
+channels = [{ channel = "https://prefix.dev/robostack-humble", priority = 1 }]
+
+[feature.humble.dependencies]
+ros-humble-ros-base = "*"
+ros-humble-rclpy = "*"
+ros-humble-std-msgs = "*"
+ros-humble-ament-cmake = "*"
+ros-humble-ament-cmake-python = "*"
+ros-humble-ament-cmake-pytest = "*"
+ros-humble-launch = "*"
+ros-humble-launch-ros = "*"
+ros-humble-ament-index-python = "*"
+ros-humble-launch-testing = "*"
+ros-humble-launch-testing-ros = "*"
+ros-humble-launch-testing-ament-cmake = "*"
+
+[feature.jazzy]
+channels = [{ channel = "https://prefix.dev/robostack-jazzy", priority = 1 }]
+
+[feature.jazzy.dependencies]
+ros-jazzy-ros-base = "*"
+ros-jazzy-rclpy = "*"
+ros-jazzy-std-msgs = "*"
+ros-jazzy-ament-cmake = "*"
+ros-jazzy-ament-cmake-python = "*"
+ros-jazzy-ament-cmake-pytest = "*"
+ros-jazzy-launch = "*"
+ros-jazzy-launch-ros = "*"
+ros-jazzy-ament-index-python = "*"
+ros-jazzy-launch-testing = "*"
+ros-jazzy-launch-testing-ros = "*"
+ros-jazzy-launch-testing-ament-cmake = "*"
+
+[environments]
+default = ["jazzy"]
+humble = ["humble"]
+jazzy = ["jazzy"]
