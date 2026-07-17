@@ -23,63 +23,63 @@ Within the same MAJOR version, the components behave as follows:
 Below is a full example; each property is described in the following sections.
 
 ```yaml
-schema_version: "0.1.0"
-sensing_system_name: "id1_rav4"
-sensing_system_id: "6yb9g3aj"
-module_id: "qu159UZU"
-module_name: "ecu0"
-sibling_module_ids: ["W7LF521y"]
-storage_type: "mcap"
+schema_version: 0.1.0
+sensing_system_name: id1_rav4
+sensing_system_id: 6yb9g3aj
+module_id: qu159UZU
+module_name: ecu0
+sibling_module_ids: [W7LF521y]
+storage_type: mcap
 sensors:
   lidar:
-    - topic: "/sensing/lidar/front/nebula_packets"
-      mapped_topic: "/sensing/lidar/front/lidar_packets"
-      frame_id: "lidar_front"
-      type: "nebula_msgs/msg/NebulaPackets"
+    - topic: /sensing/lidar/front/nebula_packets
+      mapped_topic: /sensing/lidar/front/lidar_packets
+      frame_id: lidar_front
+      type: nebula_msgs/msg/NebulaPackets
       hz: 10.0
       tos_offset: 0.0
       timestamp_offset: 0.0
-      name: "LiDAR Front"
-    - topic: "/sensing/lidar/right/nebula_packets"
-      mapped_topic: "/sensing/lidar/right/lidar_packets"
-      frame_id: "lidar_right"
-      type: "nebula_msgs/msg/NebulaPackets"
+      name: LiDAR Front
+    - topic: /sensing/lidar/right/nebula_packets
+      mapped_topic: /sensing/lidar/right/lidar_packets
+      frame_id: lidar_right
+      type: nebula_msgs/msg/NebulaPackets
       hz: 10.0
       tos_offset: 0.0
       timestamp_offset: 0.0
-      name: "LiDAR Right"
+      name: LiDAR Right
   camera:
-    - topic: "/sensing/camera/camera0/image_raw/compressed"
-      mapped_topic: "/sensing/camera/front_narrow/image_raw/compressed"
-      frame_id: "camera0/camera_link"
-      type: "sensor_msgs/msg/CompressedImage"
+    - topic: /sensing/camera/camera0/image_raw/compressed
+      mapped_topic: /sensing/camera/front_narrow/image_raw/compressed
+      frame_id: camera0/camera_link
+      type: sensor_msgs/msg/CompressedImage
       hz: 20.0
       tos_offset: 50.0
-      name: "Camera Front Narrow"
+      name: Camera Front Narrow
       timestamp_offset: 0.0
-    - topic: "/sensing/camera/camera1/image_raw/compressed"
-      mapped_topic: "/sensing/camera/front_wide/image_raw/compressed"
-      frame_id: "camera1/camera_link"
-      type: "sensor_msgs/msg/CompressedImage"
+    - topic: /sensing/camera/camera1/image_raw/compressed
+      mapped_topic: /sensing/camera/front_wide/image_raw/compressed
+      frame_id: camera1/camera_link
+      type: sensor_msgs/msg/CompressedImage
       hz: 20.0
       tos_offset: 50.0
-      name: "Camera Front Wide"
+      name: Camera Front Wide
       timestamp_offset: 0.0
-    - topic: "/sensing/camera/camera2/image_raw/compressed"
-      mapped_topic: "/sensing/camera/front_right/image_raw/compressed"
-      frame_id: "camera2/camera_link"
-      type: "sensor_msgs/msg/CompressedImage"
+    - topic: /sensing/camera/camera2/image_raw/compressed
+      mapped_topic: /sensing/camera/front_right/image_raw/compressed
+      frame_id: camera2/camera_link
+      type: sensor_msgs/msg/CompressedImage
       hz: 20.0
       tos_offset: 50.0
-      name: "Camera Front Right"
+      name: Camera Front Right
       timestamp_offset: 0.0
-    - topic: "/sensing/camera/camera3/image_raw/compressed"
-      mapped_topic: "/sensing/camera/back_right/image_raw/compressed"
-      frame_id: "camera3/camera_link"
-      type: "sensor_msgs/msg/CompressedImage"
+    - topic: /sensing/camera/camera3/image_raw/compressed
+      mapped_topic: /sensing/camera/back_right/image_raw/compressed
+      frame_id: camera3/camera_link
+      type: sensor_msgs/msg/CompressedImage
       hz: 20.0
       tos_offset: 50.0
-      name: "Camera Back Right"
+      name: Camera Back Right
       timestamp_offset: 0.0
 ```
 
