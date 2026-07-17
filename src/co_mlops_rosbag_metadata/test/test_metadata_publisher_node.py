@@ -17,7 +17,7 @@ from std_msgs.msg import String
 
 
 def _node_additional_env():
-    """PYTHONPATH so the node process can import the package (e.g. when run via poetry run pytest)."""
+    """PYTHONPATH so the node process can import the package (e.g. when run via pixi run test)."""
     prefix = get_package_prefix("co_mlops_rosbag_metadata")
     py_ver = f"{sys.version_info.major}.{sys.version_info.minor}"
     site_packages = os.path.join(prefix, "lib", f"python{py_ver}", "site-packages")
