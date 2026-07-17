@@ -25,11 +25,6 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install Poetry and dependencies
-        run: |
-          pip install poetry
-          poetry install
-
       - name: Install pre-commit
         run: pip install pre-commit
 
