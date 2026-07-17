@@ -23,7 +23,10 @@ cmd = 'colcon build --packages-select co_mlops_rosbag_metadata --build-base "bui
 
 [tasks.test]
 depends-on = ["build"]
-cmd = 'colcon test --packages-select co_mlops_rosbag_metadata --build-base "build/$PIXI_ENVIRONMENT_NAME" --install-base "install/$PIXI_ENVIRONMENT_NAME" --event-handlers console_direct+ && colcon test-result --test-result-base "build/$PIXI_ENVIRONMENT_NAME" --verbose'
+# Source the workspace overlay so the tests can resolve the package via
+# AMENT_PREFIX_PATH (get_package_prefix / get_package_share_directory); on a
+# clean env (e.g. CI) colcon test does not add install/ to AMENT_PREFIX_PATH.
+cmd = 'bash -c "source install/$PIXI_ENVIRONMENT_NAME/setup.bash && colcon test --packages-select co_mlops_rosbag_metadata --build-base build/$PIXI_ENVIRONMENT_NAME --install-base install/$PIXI_ENVIRONMENT_NAME --event-handlers console_direct+ && colcon test-result --test-result-base build/$PIXI_ENVIRONMENT_NAME --verbose"'
 
 [tasks.launch]
 args = [{ arg = "path" }]
