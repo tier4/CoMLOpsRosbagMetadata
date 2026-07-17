@@ -3,18 +3,27 @@ name: pre-commit
 on:
   pull_request:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Set up Python
+      - name: Set up Python (pre-commit + python-based hooks)
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
+
+      - name: Set up Node (prettier / markdownlint / markdown-link-check hooks)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
       - name: Install Poetry and dependencies
         run: |
@@ -25,4 +34,4 @@ jobs:
         run: pip install pre-commit
 
       - name: Run pre-commit
-        run: pre-commit run --all-files -c .pre-commit-config.yaml
+        run: pre-commit run --all-files -c .pre-commit-config.yaml --show-diff-on-failure
