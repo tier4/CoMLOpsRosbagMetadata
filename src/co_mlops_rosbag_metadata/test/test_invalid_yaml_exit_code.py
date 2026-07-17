@@ -31,5 +31,5 @@ def test_node_exits_with_error_code_on_invalid_yaml():
     )
 
     assert result.returncode == 1, (
-        f"Expected exit code 1, got {result.returncode}. " f"stderr: {result.stderr.decode()!r}"
+        f"Expected exit code 1, got {result.returncode}. stderr: {result.stderr.decode()!r}"
     )
