@@ -25,55 +25,52 @@ This repository uses two independent version numbers: **package version** matche
 
 This package provides the **Co-MLOps** metadata publisher node (`CoMLOpsMetadataPublisherNode`), which publishes the contents of a YAML file as `std_msgs/String` on a configurable topic. The file at `path` is read and validated as parseable YAML; if it is not valid YAML, the node exits with an error. Start this node when recording; by including the topic (e.g. `/metadata`) in the bag, the config can be restored on replay.
 
-### Installation
+### Prerequisites
 
-1. **Clone the repository** (or add it to your ROS 2 workspace):
+This repository uses [pixi](https://pixi.sh). No system ROS 2 install is required — pixi provisions ROS 2 from RoboStack and the toolchain from conda-forge:
 
-   ```bash
-   git clone https://github.com/<your-org>/CoMLOpsRosbagMetadata.git
-   cd CoMLOpsRosbagMetadata
-   ```
+```bash
+curl -fsSL https://pixi.sh/install.sh | bash
+```
 
-2. **Install ROS 2** (if not already installed): [Install ROS 2](https://docs.ros.org/en/humble/Installation.html) (Humble or later).
+### Environments
 
-3. **Install dependencies**:
+Two ROS 2 distributions are available as pixi environments; `jazzy` is the default.
 
-   - **ROS and system dependencies** (package.xml + rosdep):
+- `jazzy` (default)
+- `humble`
 
-     ```bash
-     rosdep update
-     rosdep install --from-paths src --ignore-src -r -y
-     ```
-
-   - **Python-only dependencies** (optional; use Poetry for scripts or tooling):
-
-     ```bash
-     poetry install
-     ```
-
-   Convention: ROS-related packages are declared in `package.xml` and installed via rosdep; Python-only packages are managed in `pyproject.toml` (Poetry).
+Add `-e <distro>` to any command to select a distribution; omit it to use the default (`jazzy`).
 
 ### Build
 
 ```bash
-cd /path/to/CoMLOpsRosbagMetadata
-source /opt/ros/<ROS_DISTRIBUTION>/setup.bash
-colcon build --packages-select co_mlops_rosbag_metadata
-# To build with tests
-# colcon build --packages-select co_mlops_rosbag_metadata --cmake-args -DBUILD_TESTING=ON
-source install/setup.bash
+pixi run build            # default (jazzy)
+pixi run -e humble build  # Humble
 ```
 
 ### Testing
 
 ```bash
-colcon test --packages-select co_mlops_rosbag_metadata
-colcon test-result --verbose
+pixi run test             # default (jazzy)
+pixi run -e humble test   # Humble
 ```
 
-The last command prints the test output; omit it if you only need the pass/fail result.
-
 ### Usage
+
+The `launch` task builds (if needed) and starts the publisher node. Pass the YAML path as the task argument:
+
+```bash
+pixi run launch /path/to/config.yaml
+```
+
+Or open an interactive shell with ROS 2 on `PATH` and launch manually:
+
+```bash
+pixi shell -e jazzy
+ros2 launch co_mlops_rosbag_metadata co_mlops_rosbag_metadata_publisher.launch.xml \
+  path:=/path/to/config.yaml
+```
 
 #### Required parameter
 
@@ -85,9 +82,4 @@ The last command prints the test output; omit it if you only need the pass/fail 
 - `delay_before_first_publish`: Delay in seconds before the first publish; 0 or less = best effort (default: 0.0).
 - `frequency`: Republish rate in Hz; use 0 for one-shot (default: 1.0).
 
-#### Example
-
-```bash
-ros2 launch co_mlops_rosbag_metadata co_mlops_rosbag_metadata_publisher.launch.xml \
-  path:=/path/to/config.yaml
-```
+The `pixi run launch` task forwards only `path`. To set the optional parameters, use the `pixi shell` form above and pass them to `ros2 launch` (e.g. `topic:=/metadata frequency:=1.0`).
